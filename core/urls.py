@@ -18,7 +18,7 @@ from django.urls import path
 from analytics.views import home, dashboard
 
 urlpatterns = [
-    path("admin/", admin.site.urls),   # 🔥 IMPORTANT
+    path("admin/", admin.site.urls),   
     path("", home, name="home"),
     path("dashboard/", dashboard, name="dashboard"),
 ]

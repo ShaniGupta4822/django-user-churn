@@ -1,4 +1,4 @@
-# analytics/views.py
+
 import os
 import pickle
 from django.shortcuts import render, redirect
@@ -24,7 +24,6 @@ def home(request):
 
 
 def dashboard(request):
-    # ---------- USER RESULT FROM HOME ----------
     user_result = None
     user_input = request.session.pop("user_input", None)
 
@@ -51,7 +50,6 @@ def dashboard(request):
             "risk": risk
         }
 
-    # ---------- USERS TABLE ----------
     search = request.GET.get("search", "")
     qs = UserActivity.objects.all()
 
@@ -82,7 +80,6 @@ def dashboard(request):
     paginator = Paginator(users, 20)
     page_obj = paginator.get_page(request.GET.get("page"))
 
-    # ---------- FEATURE IMPORTANCE ----------
     feature_names = ["Login Count", "Avg Session Time", "Days Inactive", "Feature Usage"]
     feature_importance = [
         {"name": n, "score": int(s * 100)}
