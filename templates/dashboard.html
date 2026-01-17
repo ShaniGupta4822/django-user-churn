@@ -1,0 +1,105 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Churn Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="dashboard-container">
+
+    <h2>User Churn Dashboard</h2>
+
+    {% if user_result %}
+    <div class="highlight-wrapper">
+        <div class="highlight-card">
+            <h3>Your Churn Analysis</h3>
+            <p><b>Churn Probability:</b> {{ user_result.churn }}%</p>
+            <p><b>Risk Level:</b> {{ user_result.risk }}</p>
+        </div>
+    </div>
+    {% endif %}
+
+    <form class="search-bar" method="get">
+        <input type="text" name="search" placeholder="Search by User ID" value="{{ search }}">
+        <button type="submit">Search</button>
+    </form>
+
+    <table>
+        <tr>
+            <th>User ID</th>
+            <th>Login Count</th>
+            <th>Days Inactive</th>
+            <th>Feature Usage</th>
+            <th>Churn Probability</th>
+            <th>Risk</th>
+        </tr>
+
+        {% for user in page_obj %}
+        <tr>
+            <td>{{ user.user_id }}</td>
+            <td>{{ user.login_count }}</td>
+            <td>{{ user.days_inactive }}</td>
+            <td>{{ user.feature_usage }}</td>
+            <td>{{ user.churn_prob }}%</td>
+            <td class="{{ user.risk }}">{{ user.risk|title }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}&search={{ search }}">Previous</a>
+        {% endif %}
+
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}&search={{ search }}">Next</a>
+        {% endif %}
+    </div>
+
+    <h3 class="section-title">Why users are churning?</h3>
+
+    <table>
+        <tr>
+            <th>Feature</th>
+            <th>Impact (%)</th>
+        </tr>
+        {% for f in feature_importance %}
+        <tr>
+            <td>{{ f.name }}</td>
+            <td>{{ f.score }}%</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h3 class="section-title">Feature Importance (Visual)</h3>
+    <canvas id="featureChart" height="120"></canvas>
+
+</div>
+
+<script>
+    const labels = [{% for f in feature_importance %}"{{ f.name }}",{% endfor %}];
+    const values = [{% for f in feature_importance %}{{ f.score }},{% endfor %}];
+
+    new Chart(document.getElementById("featureChart"), {
+        type: "bar",
+        data: {
+            labels: labels,
+            datasets: [{
+                data: values,
+                backgroundColor: ["#ff6b6b","#4dabf7","#69db7c","#ffd43b"]
+            }]
+        },
+        options: {
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true, max: 100 } }
+        }
+    });
+</script>
+
+</body>
+</html>

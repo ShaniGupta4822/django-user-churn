@@ -1,0 +1,39 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Churn Prediction</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+<div class="home-wrapper">
+    <div class="container">
+        <h2>User Churn Prediction</h2>
+
+        <p style="text-align:center; color:#555;">
+            Enter user behavior details to analyze churn risk and view insights.
+        </p>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <label>Login Count</label>
+            <input type="number" name="login_count" required>
+
+            <label>Average Session Time (minutes)</label>
+            <input type="number" step="0.1" name="avg_session_time" required>
+
+            <label>Days Inactive</label>
+            <input type="number" name="days_inactive" required>
+
+            <label>Feature Usage Count</label>
+            <input type="number" name="feature_usage" required>
+
+            <button type="submit">Go to Dashboard</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>
